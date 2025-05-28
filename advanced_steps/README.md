@@ -11,8 +11,5 @@ CUDA/ROCm: answer according to your setup (probably "No" if you’re CPU-only)
 Optimization flags: here's the key part!
 
 You need to run this command:
-bazel build --config=opt \
-  --copt=-march=native \
-  --copt=-Wno-sign-compare \
-  --copt=-Wno-unused-result \
-  //tensorflow/tools/pip_package:build_pip_package
+
+bazel build //tensorflow/tools/pip_package:wheel --repo_env=WHEEL_NAME=tensorflow_cpu --local_ram_resources=2048 --config=monolithic --verbose_failures -c opt --config=opt --copt=-Wno-gnu-offsetof-extensions --copt=-march=native --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-msse4.1 --copt=-msse4.2

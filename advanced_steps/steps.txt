@@ -3,22 +3,12 @@ sudo apt install -y python3-dev python3-pip git zlib1g-dev \
     libosmesa6-dev libgl1-mesa-glx libglfw3 curl unzip \
     openjdk-11-jdk zip bazel
 
-sudo apt install apt-transport-https curl gnupg
-curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel.gpg
-sudo mv bazel.gpg /etc/apt/trusted.gpg.d/
-echo "deb [arch=amd64] https://storage.googleapisapt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-sudo apt update && sudo apt install bazel
+
 
 git clone https://github.com/tensorflow/tensorflow.git
 cd tensorflow
-git checkout <desired_version>  # e.g., v2.15.0
+git checkout v2.19.0
 
-./configure
-
-bazel build --config=opt \
-  --copt=-mavx2 \
-  --copt=-mfma \
-  //tensorflow/tools/pip_package:build_pip_package
-
-
-
+# Source https://github.com/tensorflow/tensorflow/issues/85365
+python configure.py
+bazel build //tensorflow/tools/pip_package:wheel --repo_env=WHEEL_NAME=tensorflow_cpu --local_ram_resources=2048 --config=monolithic --verbose_failures -c opt --config=opt --copt=-Wno-gnu-offsetof-extensions --copt=-march=native --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-msse4.1 --copt=-msse4.2
