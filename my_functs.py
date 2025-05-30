@@ -5,7 +5,7 @@ class Manipulate:
     def __init__(self):
         self.cal = USFederalHolidayCalendar()
 
-    def create_date(self, df, x, lag_n):
+    def create_ts_features(self, df, x, lag_n):
         df = df.copy()
         df['date'] = pd.to_datetime(df['date'])
         df['weekday'] = df['date'].dt.day_name()
@@ -29,3 +29,31 @@ class Manipulate:
         
         df = df.fillna(0)
         return df
+
+    def create_features(df: pd.DataFrame) -> pd.DataFrame:
+        """_summary_
+            Create time series features based on the time series index.
+        Args:
+            df (pd.DataFrame): _description_
+        Returns:
+            pd.DataFrame: _description_
+        """
+        # Old version
+        # df['hour'] = df.index.hour
+        # df['dayofweek'] = df.index.dayofweek
+        # df['quarter'] = df.index.quarter
+        # df['month'] = df.index.month
+        # df['year'] = df.index.year
+        # df['dayofyear'] = df.index.dayofyear
+        # df['dayofmonth'] = df.index.day
+        # df['weekofyear'] = df.index.isocalendar().week
+        # More memory efficient
+        return df.assign(
+            hour=df.index.hour,
+            dayofweek=df.index.dayofweek,
+            quarter=df.index.quarter,
+            month=df.index.month,
+            year=df.index.year,
+            dayofyear=df.index.dayofyear,
+            dayofmonth=df.index.day,
+            weekofyear=df.index.isocalendar().week
