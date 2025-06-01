@@ -30,7 +30,7 @@ class Manipulate:
         df = df.fillna(0)
         return df
 
-    def create_features(df: pd.DataFrame) -> pd.DataFrame:
+    def create_features_extracted_days(self, df: pd.DataFrame) -> pd.DataFrame:
         """_summary_
             Create time series features based on the time series index.
         Args:
