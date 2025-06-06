@@ -58,3 +58,26 @@ def df_average_error(df: pd.DataFrame, col: str) -> pd.DataFrame:
     eval_error['date'] = eval_error.index.date
     
     return eval_error.groupby(['date'])['error'].mean().sort_values(ascending=False).head(4)
+
+def split_sequence(data: np.ndarray, window_size: int, output_size: int) -> tuple:
+    """_summary_
+    it generates lags for time series data.
+    Args:
+        data (np.ndarray): _description_
+        window_size (int): _description_
+        output_size (int): _description_
+
+    Returns:
+        tuple: _description_
+    """
+    data = data.flatten()
+    num_samples = len(data) - window_size - output_size + 1
+
+    X = np.empty((num_samples, window_size), dtype=data.dtype)
+    y = np.empty((num_samples, output_size), dtype=data.dtype)
+
+    for i in range(num_samples):
+        X[i] = data[i:i + window_size]
+        y[i] = data[i + window_size:i + window_size + output_size]
+    X = X.reshape((X.shape[0], X.shape[1], output_size))
+    return X, y
